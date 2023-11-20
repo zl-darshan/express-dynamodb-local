@@ -47,3 +47,36 @@ export async function createNewNote(newNoteData)  {
     }
     return putResult;
 }
+
+export async function updateNote(id, updatingTitle) {
+
+    const updateNoteRef = {
+        ...noteRef,
+        Key: {
+            id: id
+        },
+        ConditionExpression: "id = :updatingID",
+        UpdateExpression: "set title = :updatingTitle",
+        ExpressionAttributeValues: {
+            ":updatingTitle": updatingTitle,
+            ":updatingID": id
+        }
+    };
+    let updateResult;
+
+    try {
+        await dynamoDBdocClient.update(updateNoteRef, function (err, _data) {
+            if (err) {
+                console.log("database-error", err.statusCode);
+                updateResult = err;
+            }
+            else {
+                updateResult = true;
+            }
+        }).promise();
+    }
+    catch (err) {
+        console.log("catch-error", err);
+    }
+    return updateResult;
+}
