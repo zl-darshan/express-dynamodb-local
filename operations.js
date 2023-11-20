@@ -80,3 +80,39 @@ export async function updateNote(id, updatingTitle) {
     }
     return updateResult;
 }
+
+export async function deleteNote(deleteId) {
+
+    const deleteNoteRef = {
+        ...noteRef,
+        Key: {
+            id: deleteId
+        }
+    };
+    let deleteResult;
+
+    try {
+        await dynamoDBdocClient.delete(deleteNoteRef, function (err, data) {
+            if (err) {
+                console.log("deleteNote(): database-error", err.statusCode);
+                deleteResult = err;
+            }
+            else {
+                if (data.ConsumedCapacity === undefined) {
+                    deleteResult = true; 
+                    console.log("note deleted.");
+                } else {
+                    console.log("deleteNote(): IdNoteFound");
+                    deleteResult = {
+                        code: "IdNoteFound",
+                        statusCode: 404
+                    };
+                }
+            }
+        }).promise();
+    }
+    catch (err) {
+        console.log("deleteNote(): catch-error", err);
+    }
+    return deleteResult;
+}

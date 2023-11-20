@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 
-import { createNewNote, getAllNotes, updateNote } from "./operations.js";
+import { createNewNote, getAllNotes, updateNote, deleteNote } from "./operations.js";
 
 export async function getAllNotesReq(_req, res) {
 
@@ -49,5 +49,20 @@ export async function updateNoteReq(req, res) {
         res.status(result.statusCode).send(`note with the id ${req.query.id} is not found.`);
     } else {
         res.status(result.statusCode).send(`error on title update: ${result} `);
+    }
+}
+
+export async function deleteNoteReq(req, res) {
+    console.log(req.query);
+
+    const result = await deleteNote(req.query.id);
+
+    if (result === true) {
+        console.log(`note is deleted of note-id: ${req.query.id}`);
+        res.status(200).send(`note is deleted of note-id: ${req.query.id}`);
+    } else if (result.code === "IdNoteFound") {
+        res.status(result.statusCode).send(`note with the id ${req.query.id} is not found.`);
+    } else {
+        res.status(result.statusCode).send(`error on note delete: ${result} `);
     }
 }
