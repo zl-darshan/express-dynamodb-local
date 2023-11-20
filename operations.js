@@ -4,6 +4,26 @@ const noteRef = {
     TableName: "notes"
 };
 
+export async function getAllNotes() {
+    let getAllNotesResult;
+
+    try {
+        await dynamoDBdocClient.scan(noteRef, function (err, data) {
+            if (err) {
+                console.log("database-error", err.statusCode);
+                getAllNotesResult = err;
+            }
+            else {
+                getAllNotesResult = data;
+            }
+        }).promise();
+    }
+    catch (err) {
+        console.log("getAllNotes()-catch-error", err);
+    }
+    return getAllNotesResult;
+}
+
 export async function createNewNote(newNoteData)  {
     const newNoteRef = {
         ...noteRef,

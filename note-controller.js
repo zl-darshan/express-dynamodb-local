@@ -1,6 +1,18 @@
 import { nanoid } from "nanoid"
 
-import { createNewNote } from "./operations.js";
+import { createNewNote, getAllNotes } from "./operations.js";
+
+export async function getAllNotesReq(_req, res) {
+
+    const result = await getAllNotes();
+
+    if (result.Count > 0) {
+        console.log(`fatched notes`);
+        res.status(200).json(result.Items);
+    } else {
+        res.status(result.statusCode).send(`error on fatching notes: ${result} `);
+    }
+}
 
 export async function createNewNoteReq(req, res) {
     console.log("body--", req.body);
