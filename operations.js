@@ -1,26 +1,29 @@
-import {nanoid} from "nanoid"
-
 import { dynamoDBdocClient } from "./aws-local-setup.js";
 
 const noteRef = {
     TableName: "notes"
 };
 
-export async function createNewNote(req, res)  {
-    console.log(req.body);
-    const noteTitle = req.body.title || "empty title from post req.";
-    const newNote = {
-        "id": nanoid(),
-        "title": noteTitle
-    };
+export async function createNewNote(newNoteData)  {
     const newNoteRef = {
         ...noteRef,
-        Item: newNote
+        Item: newNoteData
     };
+    let putResult;
 
-    const result = await dynamoDBdocClient.put(newNoteRef, function (err, data) {
-        if (err) console.log(err);
-        else console.log("note added: ", data);
-    });
-    res.send(`<h1>new note added: ${noteTitle} </h1>`);
+    try {
+        await dynamoDBdocClient.put(newNoteRef, function (err, data) {
+            if (err) {
+                console.log("database-error", err.statusCode);
+                putResult = err;
+            }
+            else {
+                putResult = true;
+            }
+        }).promise();
+    }
+    catch (err) {
+        console.log("catch-error", err);
+    }
+    return putResult;
 }

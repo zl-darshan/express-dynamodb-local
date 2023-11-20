@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import { createNewNote } from "./operations.js";
+import { createNewNoteReq } from "./note-controller.js";
 
 const app = express();
 const port = 3010;
@@ -16,4 +16,4 @@ app.get("/", (_req, res) => {
     res.send("<h1>Hello from express server!!</h1>");
 });
 
-app.post("/add-note", createNewNote);
+app.post("/add-note", createNewNoteReq);
