@@ -38,7 +38,10 @@ export async function createNewNote(newNoteData)  {
                 putResult = err;
             }
             else {
-                putResult = true;
+                console.log();
+                putResult = {
+                    statusCode: 200
+                };
             }
         }).promise();
     }
@@ -104,7 +107,7 @@ export async function deleteNote(deleteId) {
                 } else {
                     console.log("deleteNote(): IdNoteFound");
                     deleteResult = {
-                        code: "IdNoteFound",
+                        errorType: "IdNoteFound",
                         statusCode: 404
                     };
                 }

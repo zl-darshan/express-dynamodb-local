@@ -24,9 +24,9 @@ export async function createNewNoteReq(req, res) {
     
     const result = await createNewNote(newNote);
 
-    if (result === true) {
-        console.log(`New note added: ${noteTitle}`);
-        res.status(200).send(`New note added: ${noteTitle}`);
+    if (result.statusCode === 200) {
+        console.log(`New note added: ${noteTitle}, id: ${newNote.id}`);
+        res.status(200).send(`New note added: ${noteTitle}, note: ${JSON.stringify(newNote)}`);
     } else {
         res.status(result.statusCode).send(`error on note adding: ${result} `);
     }
@@ -44,8 +44,7 @@ export async function updateNoteReq(req, res) {
     if (result === true) {
         console.log(`title is updated of note-id: ${req.query.id}`);
         res.status(200).send(`title is updated of note-id: ${req.query.id}`);
-    } else if (result.code === "ConditionalCheckFailedException") {
-        console.log("code", result.code);
+    } else if (result.errorType === "ConditionalCheckFailedException") {
         res.status(result.statusCode).send(`note with the id ${req.query.id} is not found.`);
     } else {
         res.status(result.statusCode).send(`error on title update: ${result} `);
@@ -60,7 +59,7 @@ export async function deleteNoteReq(req, res) {
     if (result === true) {
         console.log(`note is deleted of note-id: ${req.query.id}`);
         res.status(200).send(`note is deleted of note-id: ${req.query.id}`);
-    } else if (result.code === "IdNoteFound") {
+    } else if (result.errorType === "IdNoteFound") {
         res.status(result.statusCode).send(`note with the id ${req.query.id} is not found.`);
     } else {
         res.status(result.statusCode).send(`error on note delete: ${result} `);
